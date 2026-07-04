@@ -1,4 +1,5 @@
-***HORUS (Healthcare & Operational Reagent Upkeep System)***
+##HORUS (Healthcare & Operational Reagent Upkeep System)##
+
 ## Inspiration
 Anyone who has worked in a laboratory knows how expensive reagents can be. Things like custom RNA primers or high-fidelity polymerases can cost $500 for a tiny vial. In a busy lab, it's easy for students to forget to log when they opened a bottle, or left something in the wrong freezer. When an expensive enzyme spoils or goes past its expiration date, it can ruin weeks of experimental data and squander funds. 
 
