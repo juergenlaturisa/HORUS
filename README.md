@@ -12,3 +12,6 @@ The app handles the date math automatically. It calculates the remaining days be
 $$E_{days} = T_{expiry} - T_{current}$$
 
 If a premium item gets within 7 days of expiring, the dashboard automatically highlights that row in red. This gives the lab team a visual warning so that they don't accidentally use an expired sample in an active experiment.
+
+## Site
+Check it out on https://juergenlaw.github.io/HORUS/
