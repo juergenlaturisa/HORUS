@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HORUS // Laboratory Asset Ledger</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%234F46E5'><style>@media (prefers-color-scheme: dark) { stroke: %2393C5FD; }</style><path stroke-linecap='round' stroke-linejoin='round' d='M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'></path></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 min-h-screen transition-colors duration-200">
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/75 dark:bg-slate-900/75 border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-600 to-slate-900 dark:from-indigo-400 dark:to-slate-100 flex items-center justify-center shadow-md shadow-indigo-500/10">
+                    <svg class="w-6 h-6 text-white dark:text-slate-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap='round' stroke-linejoin='round' d='M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
+                        HORUS <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/40 tracking-normal">v1.0.0</span>
+                    </h1>
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                        <span class="flex items-center gap-1">
+                            🏢 <input id="metaLab" type="text" class="bg-transparent font-semibold text-slate-700 dark:text-slate-300 border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none w-44 transition-colors" title="Click to edit Lab Name">
+                        </span>
+                        <span class="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+                        <span class="flex items-center gap-0.5">
+                            ID: <input id="metaId" type="text" class="bg-transparent font-mono font-semibold text-slate-700 dark:text-slate-300 border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none w-24 transition-colors" title="Click to edit Facility ID">
+                        </span>
+                        <span class="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+                        <span class="flex items-center gap-0.5">
+                            Manager: <input id="metaManager" type="text" class="bg-transparent font-semibold text-slate-700 dark:text-slate-300 border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none w-36 transition-colors" title="Click to edit Manager">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button id="themeToggle" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all">
+                    <svg id="sunIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap='round' stroke-linejoin='round' d='M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m2.828 9.9a5 5 0 117.072 0 5 5 0 01-7.072 0z'></path></svg>
+                    <svg id="moonIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap='round' stroke-linejoin='round' d='M20.354 15.354A9 9 0 118.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z'></path></svg>
+                </button>
+                <button id="exportCsv" class="px-3 py-2 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap='round' stroke-linejoin='round' d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v1m-4-4l-4 4m0 0l-4-4m4 4V4'></path></svg>
+                    Export CSV
+                </button>
+                <button id="openDrawerBtn" class="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-sm flex items-center gap-1">
+                    <span>+</span> Add Reagent
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        
+        <div id="kpiGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors">
+            <div class="relative flex-1 max-w-md">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap='round' stroke-linejoin='round' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'></path></svg>
+                </span>
+                <input type="text" id="searchInput" placeholder="Search biological reagents, primers, enzymes..." class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all">
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <select id="filterStorage" class="text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 focus:outline-none transition-all">
+                    <option value="ALL">All Storage Location Temps</option>
+                    <option value="-20°C">-20°C (Freezer)</option>
+                    <option value="-80°C">-80°C (Ultracold)</option>
+                    <option value="4°C">4°C (Refrigerator)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm transition-colors">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-medium select-none">
+                            <th id="sortName" class="p-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Asset / Reagent Name ↕</th>
+                            <th id="sortStorage" class="p-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Allocation ↕</th>
+                            <th id="sortOpened" class="p-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Date Logged / Opened ↕</th>
+                            <th id="sortDays" class="p-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Lifespan Compliance ↕</th>
+                            <th class="p-4 text-right">System Metrics</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reagentTableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyState" class="hidden p-12 text-center text-slate-400 dark:text-slate-500">
+                No laboratory assets found matching the chosen filtration schema.
+            </div>
+        </div>
+    </main>
+
+    <div id="drawerOverlay" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0">
+        <div id="drawerContent" class="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-in-out border-l border-slate-200 dark:border-slate-800">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <h2 class="text-lg font-semibold tracking-tight">Log New Bio-Asset</h2>
+                    <button id="closeDrawerBtn" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors text-xl font-bold">&times;</button>
+                </div>
+                
+                <form id="reagentForm" class="mt-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Asset Label Name</label>
+                        <input required id="inputName" type="text" placeholder="e.g., Taq Polymerase MaxLife" class="w-full text-sm p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Cold-Chain Temperature Tier</label>
+                        <select id="inputStorage" class="w-full text-sm p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none transition-all">
+                            <option value="-20°C">-20°C (Standard Enzyme Preservation)</option>
+                            <option value="-80°C">-80°C (Ultracold Cellular Structuring)</option>
+                            <option value="4°C">4°C (Standard Biological Refrigerator)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Date Opened</label>
+                            <input required id="inputOpened" type="date" class="w-full text-sm p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Lifespan (Days)</label>
+                            <input required id="inputDays" type="number" min="1" placeholder="e.g., 180" class="w-full text-sm p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none transition-all">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-3">
+                <button id="cancelFormBtn" class="flex-1 py-2.5 text-sm font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Cancel</button>
+                <button type="submit" form="reagentForm" class="flex-1 py-2.5 text-sm font-semibold bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-sm">Commit to Ledger</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            function getOffsetDateString(daysOffset) {
+                const d = new Date();
+                d.setDate(d.getDate() + daysOffset);
+                return d.toISOString().split('T')[0];
+            }
+
+            const defaultSeeds = [
+                { id: 1, name: "Taq Polymerase MaxLife", storage: "-20°C", opened: getOffsetDateString(-15), totalDays: 365 },
+                { id: 2, name: "Custom RNA Primer Mix B", storage: "-80°C", opened: getOffsetDateString(-4), totalDays: 14 },
+                { id: 3, name: "EcoRI Restriction Enzyme", storage: "-20°C", opened: getOffsetDateString(-60), totalDays: 120 },
+                { id: 4, name: "10x PCR Loading Buffer", storage: "4°C", opened: getOffsetDateString(-30), totalDays: 180 },
+                { id: 5, name: "Monoclonal Anti-Actin Antibody", storage: "4°C", opened: getOffsetDateString(-8), totalDays: 10 }
+            ];
+
+            let store = JSON.parse(localStorage.getItem("horus_ledger_v1")) || defaultSeeds;
+            let activeSearch = "";
+            let activeFilter = "ALL";
+            let sortColumn = "days";
+            let sortAscending = true;
+
+            const userSettings = JSON.parse(localStorage.getItem("horus_user_settings")) || {
+                labName: "BioSafety Level 2 Lab (BSL-2)",
+                facilityId: "NY-CLIN-842",
+                manager: "Dr. Barry McKackiner"
+            };
+
+            const metaLab = document.getElementById("metaLab");
+            const metaId = document.getElementById("metaId");
+            const metaManager = document.getElementById("metaManager");
+
+            metaLab.value = userSettings.labName;
+            metaId.value = userSettings.facilityId;
+            metaManager.value = userSettings.manager;
+
+            function saveSettings() {
+                userSettings.labName = metaLab.value;
+                userSettings.facilityId = metaId.value;
+                userSettings.manager = metaManager.value;
+                localStorage.setItem("horus_user_settings", JSON.stringify(userSettings));
+            }
+
+            metaLab.onchange = saveSettings;
+            metaId.onchange = saveSettings;
+            metaManager.onchange = saveSettings;
+
+            function commitState() {
+                localStorage.setItem("horus_ledger_v1", JSON.stringify(store));
+            }
+
+            function calculateRemaining(openedDateStr, totalDays) {
+                const opened = new Date(openedDateStr);
+                const expiry = new Date(opened.getTime() + (totalDays * 86400000));
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                return Math.ceil((expiry - today) / 86400000);
+            }
+
+            // XSS SAFETY SANITIZATION: Helper function to escape text safely
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function renderDashboard() {
+                const tbody = document.getElementById("reagentTableBody");
+                const emptyState = document.getElementById("emptyState");
+                tbody.innerHTML = "";
+
+                let criticalCount = 0;
+                let expiredCount = 0;
+                let allocationMap = { "-20°C": 0, "-80°C": 0, "4°C": 0 };
+
+                let processedRecords = store.map(item => {
+                    const daysLeft = calculateRemaining(item.opened, item.totalDays);
+                    if (allocationMap[item.storage] !== undefined) {
+                        allocationMap[item.storage]++;
+                    }
+                    if (daysLeft <= 0) expiredCount++;
+                    else if (daysLeft <= 7) criticalCount++;
+                    
+                    return { ...item, daysLeft };
+                });
+
+                let filtered = processedRecords.filter(item => {
+                    const matchesSearch = item.name.toLowerCase().includes(activeSearch.toLowerCase());
+                    const matchesFilter = activeFilter === "ALL" || item.storage === activeFilter;
+                    return matchesSearch && matchesFilter;
+                });
+
+                filtered.sort((a, b) => {
+                    let valA = a[sortColumn];
+                    let valB = b[sortColumn];
+                    
+                    if (sortColumn === "days") {
+                        valA = a.daysLeft;
+                        valB = b.daysLeft;
+                    }
+
+                    if (valA < valB) return sortAscending ? -1 : 1;
+                    if (valA > valB) return sortAscending ? 1 : -1;
+                    return 0;
+                });
+
+                if (filtered.length === 0) {
+                    emptyState.classList.remove("hidden");
+                } else {
+                    emptyState.classList.add("hidden");
+                }
+
+                filtered.forEach(record => {
+                    let statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900">Optimal</span>`;
+                    let rowHighlightClass = "hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors";
+                    
+                    if (record.daysLeft <= 0) {
+                        statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-900">Expired</span>`;
+                        rowHighlightClass = "bg-rose-50/40 dark:bg-rose-950/10 hover:bg-rose-50/60 dark:hover:bg-rose-950/20 transition-colors";
+                    } else if (record.daysLeft <= 7) {
+                        statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-900">Critical</span>`;
+                        rowHighlightClass = "bg-amber-50/30 dark:bg-amber-950/5 hover:bg-amber-50/50 dark:hover:bg-amber-950/10 transition-colors";
+                    }
+
+                    let lastCheckedDisplay = "--:--";
+                    if (record.lastChecked) {
+                        const d = new Date(record.lastChecked);
+                        const formattedDate = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                        const formattedTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        lastCheckedDisplay = `${formattedDate}, ${formattedTime}`;
+                    }
+
+                    const tr = document.createElement("tr");
+                    tr.className = rowHighlightClass;
+                    
+                    // Escaped values to block cross-site execution vectors
+                    tr.innerHTML = `
+                        <td class="p-4 font-medium text-slate-900 dark:text-slate-100">${escapeHtml(record.name)}</td>
+                        <td class="p-4 font-mono text-xs text-slate-500 dark:text-slate-400">${escapeHtml(record.storage)}</td>
+                        <td class="p-4 text-slate-500 dark:text-slate-400">${escapeHtml(record.opened)}</td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold ${record.daysLeft <= 7 ? 'text-amber-600 dark:text-amber-400 font-bold' : ''}">${record.daysLeft} days</span>
+                                ${statusBadge}
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <div class="flex items-center justify-end gap-4">
+                                <div class="text-right select-none">
+                                    <div class="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Last Verified</div>
+                                    <div class="text-xs font-mono font-medium text-slate-600 dark:text-slate-300 verified-time">${escapeHtml(lastCheckedDisplay)}</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="temp-check-btn text-xs font-medium px-2.5 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                                        Log Temp Check
+                                    </button>
+                                    <button class="delete-btn text-xs font-medium px-2.5 py-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Remove Asset">
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+
+                    tr.querySelector(".temp-check-btn").onclick = (e) => {
+                        const btn = e.target;
+                        const now = new Date();
+                        
+                        const originalRecord = store.find(item => item.id === record.id);
+                        if (originalRecord) {
+                            originalRecord.lastChecked = now.toISOString();
+                        }
+                        
+                        commitState(); 
+
+                        btn.textContent = "✓ Verified";
+                        btn.className = "text-xs font-medium px-2.5 py-1.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900";
+                        
+                        const timeDisplay = tr.querySelector(".verified-time");
+                        const formattedDate = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                        const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        timeDisplay.textContent = `${formattedDate}, ${formattedTime}`;
+
+                        setTimeout(() => {
+                            btn.textContent = "Log Temp Check";
+                            btn.className = "text-xs font-medium px-2.5 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all";
+                        }, 1500);
+                    };
+
+                    tr.querySelector(".delete-btn").onclick = () => {
+                        store = store.filter(item => item.id !== record.id);
+                        commitState();
+                        renderDashboard();
+                    };
+
+                    tbody.appendChild(tr);
+                });
+
+                const total = store.length;
+                const neg20 = allocationMap["-20°C"];
+                const neg80 = allocationMap["-80°C"];
+                const pos4 = allocationMap["4°C"];
+
+                document.getElementById("kpiGrid").innerHTML = `
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Active Asset Register</div>
+                        <div class="text-3xl font-bold tracking-tight mt-1">${total} <span class="text-xs text-slate-400 font-normal">vials logged</span></div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Compliance Degradation Threats</div>
+                        <div class="text-3xl font-bold tracking-tight mt-1 text-amber-600 dark:text-amber-400">${criticalCount + expiredCount} <span class="text-xs text-slate-400 font-normal">require verification</span></div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors flex flex-col justify-between">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Cold-Chain Distribution Array</div>
+                        <div class="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-400"></span> -20°: ${neg20}</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-indigo-600"></span> -80°: ${neg80}</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-teal-400"></span> 4°: ${pos4}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const drawerOverlay = document.getElementById("drawerOverlay");
+            const drawerContent = document.getElementById("drawerContent");
+
+            function openDrawer() {
+                drawerOverlay.classList.remove("hidden");
+                setTimeout(() => {
+                    drawerOverlay.classList.remove("opacity-0");
+                    drawerContent.classList.remove("translate-x-full");
+                }, 10);
+                document.getElementById("inputOpened").value = new Date().toISOString().split('T')[0];
+            }
+
+            function closeDrawer() {
+                drawerOverlay.classList.add("opacity-0");
+                drawerContent.classList.add("translate-x-full");
+                setTimeout(() => {
+                    drawerOverlay.classList.add("hidden");
+                    document.getElementById("reagentForm").reset();
+                }, 300);
+            }
+
+            document.getElementById("openDrawerBtn").onclick = openDrawer;
+            document.getElementById("closeDrawerBtn").onclick = closeDrawer;
+            document.getElementById("cancelFormBtn").onclick = closeDrawer;
+
+            document.getElementById("reagentForm").onsubmit = (e) => {
+                e.preventDefault();
+                const newAsset = {
+                    id: Date.now(),
+                    name: document.getElementById("inputName").value.trim(),
+                    storage: document.getElementById("inputStorage").value,
+                    opened: document.getElementById("inputOpened").value,
+                    totalDays: parseInt(document.getElementById("inputDays").value, 10)
+                };
+
+                store.push(newAsset);
+                commitState();
+                closeDrawer();
+                renderDashboard();
+            };
+
+            document.getElementById("searchInput").oninput = (e) => {
+                activeSearch = e.target.value;
+                renderDashboard();
+            };
+
+            document.getElementById("filterStorage").onchange = (e) => {
+                activeFilter = e.target.value;
+                renderDashboard();
+            };
+
+            function triggerSort(columnKey) {
+                if (sortColumn === columnKey) {
+                    sortAscending = !sortAscending;
+                } else {
+                    sortColumn = columnKey;
+                    sortAscending = true;
+                }
+                renderDashboard();
+            }
+
+            document.getElementById("sortName").onclick = () => triggerSort("name");
+            document.getElementById("sortStorage").onclick = () => triggerSort("storage");
+            document.getElementById("sortOpened").onclick = () => triggerSort("opened");
+            document.getElementById("sortDays").onclick = () => triggerSort("days");
+
+            // ROBUST EXPORT ENGINE: Escapes double quotes inside row data strings safely
+            document.getElementById("exportCsv").onclick = () => {
+                let csvContent = "\uFEFFAsset Name,Storage Tier,Date Logged,Total Days Lifespan,Last Verified\n";
+                store.forEach(r => {
+                    const cleanName = r.name.replace(/"/g, '""');
+                    const lastCheckedText = r.lastChecked ? new Date(r.lastChecked).toISOString() : "N/A";
+                    csvContent += `"${cleanName}","${r.storage}","${r.opened}",${r.totalDays},"${lastCheckedText}"\n`;
+                });
+                
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", `HORUS_Asset_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            };
+
+            const html = document.documentElement;
+            const themeToggle = document.getElementById("themeToggle");
+            const sunIcon = document.getElementById("sunIcon");
+            const moonIcon = document.getElementById("moonIcon");
+
+            if (localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+                html.classList.add("dark");
+                sunIcon.classList.remove("hidden");
+                moonIcon.classList.add("hidden");
+            }
+
+            themeToggle.onclick = () => {
+                if (html.classList.contains("dark")) {
+                    html.classList.remove("dark");
+                    localStorage.setItem("theme", "light");
+                    sunIcon.classList.add("hidden");
+                    moonIcon.classList.remove("hidden");
+                } else {
+                    html.classList.add("dark");
+                    localStorage.setItem("theme", "dark");
+                    sunIcon.classList.remove("hidden");
+                    moonIcon.classList.add("hidden");
+                }
+            };
+
+            renderDashboard();
+        })();
+    </script>
+</body>
+</html>
