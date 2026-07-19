@@ -15,3 +15,6 @@ If a premium item gets within 7 days of expiring, the dashboard automatically hi
 
 ## Site
 Check it out on https://juergenlaturisa.github.io/HORUS/
+
+## Demo
+Check it out on https://youtu.be/rJtlw1ltLvc?si=qtRJ4m1vTLM2sIMw
